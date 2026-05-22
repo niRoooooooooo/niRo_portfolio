@@ -37,7 +37,7 @@ export function Footer() {
           </a>
         </div>
 
-        <span className="font-mono text-[10px] text-[var(--text-muted)]">
+        <span className="font-mono text-[13px] text-[var(--text-muted)]">
           © {year} Alex Chen
         </span>
       </div>

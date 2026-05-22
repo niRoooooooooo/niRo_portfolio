@@ -1,13 +1,14 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Download } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { staggerContainer, fadeUp } from "@/lib/utils";
 
 const HeroCanvas = dynamic(
-  () => import("@/components/canvas/HeroCanvas").then((m) => m.HeroCanvas),
+  () => import("@/components/canvas/HeroCanvas"),
   { ssr: false }
 );
 
@@ -25,12 +26,12 @@ export function Hero() {
       <HeroCanvas />
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-16 flex flex-col items-start">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-24 pb-16 flex flex-row items-center justify-center gap-32">
         <motion.div
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
-          className="max-w-3xl"
+          className="flex-1 max-w-xl"
         >
           {/* Availability badge */}
           <motion.div variants={fadeUp} className="mb-8">
@@ -46,10 +47,20 @@ export function Hero() {
           {/* Name */}
           <motion.h1
             variants={fadeUp}
-            className="font-display font-extrabold text-warm mb-4"
-            style={{ fontSize: "clamp(3rem, 8vw, 5rem)", lineHeight: 1.0 }}
+            className="font-display font-extrabold mb-4 whitespace-nowrap"
+            style={{ fontSize: "clamp(3rem, 8vw, 5rem)", lineHeight: 1.05, letterSpacing: "-0.03em" }}
           >
-            Alex Chen
+            <span className="text-warm">Niloy </span>
+            <span className="text-purple">Roy</span>
+            <span
+              className="inline-block bg-purple cursor-blink"
+              style={{
+                width: "0.25em",
+                height: "0.25em",
+                marginLeft: "0.15em",
+                verticalAlign: "-0.05em",
+              }}
+            />
           </motion.h1>
 
           {/* Role */}
@@ -84,6 +95,24 @@ export function Hero() {
             </Button>
           </motion.div>
         </motion.div>
+
+        {/* Profile image */}
+        <motion.div
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.9, delay: 0.6, ease: "easeOut" }}
+          className="hidden lg:flex flex-shrink-0 items-center justify-center"
+        >
+          <Image
+            src="/niro.png"
+            alt="Niloy Roy"
+            width={420}
+            height={520}
+            className="object-contain"
+            style={{ mixBlendMode: "screen" }}
+            priority
+          />
+        </motion.div>
       </div>
 
       {/* Scroll indicator */}
@@ -93,7 +122,7 @@ export function Hero() {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5, duration: 0.5 }}
       >
-        <span className="font-mono text-[10px] text-[var(--text-dim)] uppercase tracking-widest">
+        <span className="font-mono text-[13px] text-[var(--text-dim)] uppercase tracking-widest">
           scroll
         </span>
         <motion.div

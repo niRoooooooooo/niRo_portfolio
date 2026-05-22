@@ -20,7 +20,7 @@ export function Tag({ children, color = "default", className }: TagProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-sm border",
+        "inline-flex items-center font-mono text-[13px] uppercase tracking-widest px-2 py-0.5 rounded-sm border",
         colorMap[color],
         className
       )}

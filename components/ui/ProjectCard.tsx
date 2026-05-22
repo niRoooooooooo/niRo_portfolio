@@ -71,7 +71,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         {project.tech.map((t) => (
           <span
             key={t}
-            className="font-mono text-[10px] px-2 py-0.5 bg-[var(--bg-base)] border border-[var(--border)] text-[var(--text-muted)] rounded-sm"
+            className="font-mono text-[13px] px-2 py-0.5 bg-[var(--bg-base)] border border-[var(--border)] text-[var(--text-muted)] rounded-sm"
           >
             {t}
           </span>

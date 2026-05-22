@@ -1,292 +1,265 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
-import { useMousePosition } from "@/hooks/useMousePosition";
-
-const COLS = 20;
-const ROWS = 14;
-const PARTICLE_COUNT = 80;
-const INFLUENCE_RADIUS = 180;
-const SPRING = 0.04;
-const DAMPING = 0.88;
-
-const PURPLE = "110, 87, 255";
-const CORAL  = "255, 107, 107";
-const TEAL   = "0, 212, 170";
-
-const CODE_SNIPPETS = [
-  "const x = await fetch('/api/events')",
-  "fn distribute(tasks: Vec<Task>) -> Result<()>",
-  "SELECT * FROM events WHERE ts > NOW() - '1h'",
-  "docker build -t app:latest --platform linux/amd64 .",
-  "type Handler[T] = (ctx: Context) => Promise<T>",
-  "kubectl rollout status deploy/api-server",
-  "git commit -m 'feat: add streaming response'",
-  "npx tsc --noEmit && next build",
-  "redis-cli XADD events '*' key value",
-  "terraform apply -auto-approve",
-  "import { create } from 'zustand'",
-  "go test ./... -race -count=1",
-];
-
-interface GridPoint {
-  bx: number; by: number; // base position
-  cx: number; cy: number; // current position
-  vx: number; vy: number; // velocity
-}
+import { useEffect, useRef } from "react";
 
 interface Particle {
   x: number; y: number;
   vx: number; vy: number;
-  radius: number;
-  alpha: number;
-  alphaDir: number;
-  color: string;
+  r: number;
+  c: [number, number, number];
+  a: number;
+  ph: number;
 }
 
-interface Snippet {
-  text: string;
-  x: number; y: number;
-  alpha: number;
-  alphaDir: number;
-  speed: number;
+interface Orb {
+  x: number; y: number; r: number;
+  c: [number, number, number];
+  s: number; amp: number;
 }
 
-export function HeroCanvas() {
+const COLORS: [number, number, number][] = [
+  [110, 87, 255],
+  [255, 107, 107],
+  [0, 212, 170],
+  [240, 237, 232],
+];
+
+const GX = 20;
+const GY = 14;
+const NPART = 80;
+
+export default function HeroCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mousePos = useMousePosition();
+  const mouseRef = useRef({ x: -9999, y: -9999 });
   const rafRef = useRef<number>(0);
-
-  const buildGrid = useCallback((w: number, h: number): GridPoint[] => {
-    const pts: GridPoint[] = [];
-    for (let r = 0; r <= ROWS; r++) {
-      for (let c = 0; c <= COLS; c++) {
-        const bx = (c / COLS) * w;
-        const by = (r / ROWS) * h;
-        pts.push({ bx, by, cx: bx, cy: by, vx: 0, vy: 0 });
-      }
-    }
-    return pts;
-  }, []);
-
-  const buildParticles = useCallback((w: number, h: number): Particle[] => {
-    const colors = [PURPLE, CORAL, TEAL];
-    return Array.from({ length: PARTICLE_COUNT }, () => ({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-      radius: Math.random() * 1.5 + 0.5,
-      alpha: Math.random() * 0.5 + 0.1,
-      alphaDir: Math.random() > 0.5 ? 1 : -1,
-      color: colors[Math.floor(Math.random() * 3)],
-    }));
-  }, []);
-
-  const buildSnippets = useCallback((w: number, h: number): Snippet[] => {
-    return CODE_SNIPPETS.map((text) => ({
-      text,
-      x: Math.random() * w * 0.8 + w * 0.1,
-      y: Math.random() * h * 0.8 + h * 0.1,
-      alpha: Math.random() * 0.06 + 0.02,
-      alphaDir: Math.random() > 0.5 ? 1 : -1,
-      speed: Math.random() * 0.003 + 0.001,
-    }));
-  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const ctx = canvas.getContext("2d")!;
 
-    let w = window.innerWidth;
-    let h = window.innerHeight;
-    canvas.width = w;
-    canvas.height = h;
-
-    let grid = buildGrid(w, h);
-    let particles = buildParticles(w, h);
-    let snippets = buildSnippets(w, h);
-
-    const handleResize = () => {
-      w = window.innerWidth;
-      h = window.innerHeight;
-      canvas.width = w;
-      canvas.height = h;
-      grid = buildGrid(w, h);
-      particles = buildParticles(w, h);
-      snippets = buildSnippets(w, h);
+    let W = 0, H = 0;
+    const resize = () => {
+      W = canvas.width = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
     };
-    window.addEventListener("resize", handleResize);
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
 
-    const draw = () => {
-      ctx.clearRect(0, 0, w, h);
+    const onMove = (e: MouseEvent) => {
+      const r = canvas.getBoundingClientRect();
+      mouseRef.current = { x: e.clientX - r.left, y: e.clientY - r.top };
+    };
+    const onLeave = () => { mouseRef.current = { x: -9999, y: -9999 }; };
+    canvas.parentElement?.addEventListener("mousemove", onMove);
+    canvas.parentElement?.addEventListener("mouseleave", onLeave);
 
-      // ── Orbital glows ────────────────────────────────────────────────────
-      const glows: [number, number, string, number][] = [
-        [w * 0.25, h * 0.35, PURPLE, 320],
-        [w * 0.75, h * 0.6,  CORAL,  260],
-        [w * 0.5,  h * 0.8,  TEAL,   200],
-      ];
-      for (const [gx, gy, color, r] of glows) {
-        const grad = ctx.createRadialGradient(gx, gy, 0, gx, gy, r);
-        grad.addColorStop(0, `rgba(${color}, 0.12)`);
-        grad.addColorStop(1, `rgba(${color}, 0)`);
-        ctx.fillStyle = grad;
+    const parts: Particle[] = Array.from({ length: NPART }, () => ({
+      x: Math.random(), y: Math.random(),
+      vx: (Math.random() - 0.5) * 0.0003,
+      vy: (Math.random() - 0.5) * 0.0003,
+      r: Math.random() * 1.4 + 0.4,
+      c: COLORS[Math.floor(Math.random() * COLORS.length)],
+      a: Math.random() * 0.5 + 0.15,
+      ph: Math.random() * Math.PI * 2,
+    }));
+
+    const orbs: Orb[] = [
+      { x: 0.18, y: 0.45, r: 275, c: [110, 87, 255], s: 0.00018, amp: 0.055 },
+      { x: 0.78, y: 0.32, r: 200, c: [255, 107, 107], s: 0.00022, amp: 0.05 },
+      { x: 0.52, y: 0.75, r: 225, c: [0, 212, 170],   s: 0.00014, amp: 0.04 },
+    ];
+
+    const snips = ["async", "fn()", "</>", "=>", "{...}", "[]", "&&", "::", "null", "0x1f"];
+
+    const drawMesh = (t: number) => {
+      const mx = mouseRef.current.x;
+      const my = mouseRef.current.y;
+
+      const pts: { x: number; y: number }[] = [];
+      for (let gy = 0; gy <= GY; gy++) {
+        for (let gx = 0; gx <= GX; gx++) {
+          const bx = (gx / GX) * W;
+          const by = (gy / GY) * H;
+          const dx = mx / W - gx / GX;
+          const dy = my / H - gy / GY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const pull = Math.max(0, 0.22 - dist) / 0.22;
+          const ox = Math.sin(t * 0.0009 + gx * 0.55 + gy * 0.38) * 11;
+          const oy = Math.cos(t * 0.0007 + gy * 0.65 + gx * 0.28) * 11;
+          const pmx = (mx / W - 0.5) * pull * 40;
+          const pmy = (my / H - 0.5) * pull * 40;
+          pts.push({ x: bx + ox + pmx, y: by + oy + pmy });
+        }
+      }
+
+      for (let gy = 0; gy <= GY; gy++) {
         ctx.beginPath();
-        ctx.arc(gx, gy, r, 0, Math.PI * 2);
+        for (let gx = 0; gx <= GX; gx++) {
+          const p = pts[gy * (GX + 1) + gx];
+          gx === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+        }
+        const a = 0.055 + Math.sin(t * 0.0011 + gy) * 0.018;
+        ctx.strokeStyle = `rgba(110,87,255,${a})`;
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+      }
+
+      for (let gx = 0; gx <= GX; gx++) {
+        ctx.beginPath();
+        for (let gy = 0; gy <= GY; gy++) {
+          const p = pts[gy * (GX + 1) + gx];
+          gy === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+        }
+        const a = 0.04 + Math.cos(t * 0.001 + gx) * 0.014;
+        ctx.strokeStyle = `rgba(110,87,255,${a})`;
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+      }
+
+      for (let i = 0; i < pts.length; i++) {
+        const p = pts[i];
+        const dx = mx - p.x;
+        const dy = my - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const near = Math.max(0, 1 - dist / 163);
+        const alpha = 0.12 + near * 0.75;
+        const radius = 1.1 + near * 4;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+        ctx.fillStyle =
+          near > 0.25
+            ? `rgba(0,212,170,${alpha})`
+            : `rgba(110,87,255,${alpha})`;
         ctx.fill();
       }
+    };
 
-      // ── Code snippets ────────────────────────────────────────────────────
-      ctx.font = "11px 'DM Mono', monospace";
-      for (const s of snippets) {
-        s.alpha += s.alphaDir * s.speed;
-        if (s.alpha > 0.08) s.alphaDir = -1;
-        if (s.alpha < 0.01) s.alphaDir = 1;
-        ctx.fillStyle = `rgba(240, 237, 232, ${s.alpha})`;
-        ctx.fillText(s.text, s.x, s.y);
-      }
+    const drawOrbs = (t: number) => {
+      orbs.forEach((o, i) => {
+        const cx = (o.x + Math.sin(t * o.s * 1000 + i) * o.amp) * W;
+        const cy = (o.y + Math.cos(t * o.s * 800 + i * 1.4) * o.amp) * H;
+        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, o.r);
+        g.addColorStop(0, `rgba(${o.c},0.15)`);
+        g.addColorStop(0.5, `rgba(${o.c},0.06)`);
+        g.addColorStop(1, `rgba(${o.c},0)`);
+        ctx.beginPath();
+        ctx.arc(cx, cy, o.r, 0, Math.PI * 2);
+        ctx.fillStyle = g;
+        ctx.fill();
+      });
+    };
 
-      // ── Mesh grid ────────────────────────────────────────────────────────
-      const mx = mousePos.current.x;
-      const my = mousePos.current.y;
+    const drawParticles = (t: number) => {
+      const mx = mouseRef.current.x;
+      const my = mouseRef.current.y;
 
-      for (const pt of grid) {
-        const dx = mx - pt.bx;
-        const dy = my - pt.by;
+      parts.forEach((p) => {
+        p.x += p.vx + Math.sin(t * 0.0005 + p.ph) * 0.00014;
+        p.y += p.vy + Math.cos(t * 0.0004 + p.ph) * 0.00011;
+        if (p.x < 0) p.x = 1;
+        if (p.x > 1) p.x = 0;
+        if (p.y < 0) p.y = 1;
+        if (p.y > 1) p.y = 0;
+
+        const px = p.x * W;
+        const py = p.y * H;
+        const dx = mx - px;
+        const dy = my - py;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < INFLUENCE_RADIUS) {
-          const force = (1 - dist / INFLUENCE_RADIUS) * 18;
-          pt.vx += (dx / dist) * force;
-          pt.vy += (dy / dist) * force;
-        }
-        // spring back to base
-        pt.vx += (pt.bx - pt.cx) * SPRING;
-        pt.vy += (pt.by - pt.cy) * SPRING;
-        pt.vx *= DAMPING;
-        pt.vy *= DAMPING;
-        pt.cx += pt.vx;
-        pt.cy += pt.vy;
-      }
+        const near = Math.max(0, 1 - dist / 125);
+        const alpha = p.a + near * 0.55;
+        const rad = p.r + near * 3.1;
 
-      // draw horizontal grid lines
-      const stride = COLS + 1;
-      ctx.strokeStyle = `rgba(${PURPLE}, 0.06)`;
-      ctx.lineWidth = 0.5;
-      for (let r = 0; r <= ROWS; r++) {
         ctx.beginPath();
-        for (let c = 0; c <= COLS; c++) {
-          const p = grid[r * stride + c];
-          c === 0 ? ctx.moveTo(p.cx, p.cy) : ctx.lineTo(p.cx, p.cy);
-        }
-        ctx.stroke();
-      }
-      // draw vertical grid lines
-      for (let c = 0; c <= COLS; c++) {
-        ctx.beginPath();
-        for (let r = 0; r <= ROWS; r++) {
-          const p = grid[r * stride + c];
-          r === 0 ? ctx.moveTo(p.cx, p.cy) : ctx.lineTo(p.cx, p.cy);
-        }
-        ctx.stroke();
-      }
+        ctx.arc(px, py, rad, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.c},${alpha})`;
+        ctx.fill();
 
-      // ── Particles + connections ──────────────────────────────────────────
-      for (const p of particles) {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0) p.x = w;
-        if (p.x > w) p.x = 0;
-        if (p.y < 0) p.y = h;
-        if (p.y > h) p.y = 0;
-        p.alpha += p.alphaDir * 0.003;
-        if (p.alpha > 0.55) p.alphaDir = -1;
-        if (p.alpha < 0.08) p.alphaDir = 1;
-      }
-
-      // draw connections
-      const MAX_DIST = 100;
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const d = Math.sqrt(dx * dx + dy * dy);
-          if (d < MAX_DIST) {
-            const alpha = (1 - d / MAX_DIST) * 0.12;
-            ctx.strokeStyle = `rgba(${particles[i].color}, ${alpha})`;
-            ctx.lineWidth = 0.5;
+        parts.forEach((q) => {
+          if (q === p) return;
+          const ddx = q.x * W - px;
+          const ddy = q.y * H - py;
+          const dd = Math.sqrt(ddx * ddx + ddy * ddy);
+          if (dd < 100) {
             ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.moveTo(px, py);
+            ctx.lineTo(q.x * W, q.y * H);
+            ctx.strokeStyle = `rgba(${p.c},${(1 - dd / 100) * 0.13})`;
+            ctx.lineWidth = 0.4;
             ctx.stroke();
           }
-        }
-      }
-
-      // draw particles
-      for (const p of particles) {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
-        ctx.fill();
-      }
-
-      // ── Vignette ─────────────────────────────────────────────────────────
-      const vig = ctx.createRadialGradient(w / 2, h / 2, h * 0.3, w / 2, h / 2, h);
-      vig.addColorStop(0, "rgba(10, 10, 15, 0)");
-      vig.addColorStop(1, "rgba(10, 10, 15, 0.85)");
-      ctx.fillStyle = vig;
-      ctx.fillRect(0, 0, w, h);
-
-      // ── Corner brackets ───────────────────────────────────────────────────
-      const bSize = 24;
-      const bGap = 20;
-      ctx.strokeStyle = `rgba(${PURPLE}, 0.3)`;
-      ctx.lineWidth = 1;
-      const corners: [number, number, number, number][] = [
-        [bGap, bGap, 1, 1],
-        [w - bGap, bGap, -1, 1],
-        [bGap, h - bGap, 1, -1],
-        [w - bGap, h - bGap, -1, -1],
-      ];
-      for (const [cx2, cy2, sx, sy] of corners) {
-        ctx.beginPath();
-        ctx.moveTo(cx2 + sx * bSize, cy2);
-        ctx.lineTo(cx2, cy2);
-        ctx.lineTo(cx2, cy2 + sy * bSize);
-        ctx.stroke();
-      }
-
-      // ── Live coordinate display ───────────────────────────────────────────
-      ctx.font = "10px 'DM Mono', monospace";
-      ctx.fillStyle = `rgba(${PURPLE}, 0.4)`;
-      ctx.textAlign = "right";
-      ctx.fillText(
-        `${Math.round(mousePos.current.x)}, ${Math.round(mousePos.current.y)}`,
-        w - bGap,
-        h - bGap
-      );
-      ctx.textAlign = "left";
-
-      rafRef.current = requestAnimationFrame(draw);
+        });
+      });
     };
 
-    rafRef.current = requestAnimationFrame(draw);
+    const drawCode = (t: number) => {
+      ctx.font = "14px 'DM Mono', monospace";
+      snips.forEach((s, i) => {
+        const x = ((i * 0.095 + 0.03 + Math.sin(t * 0.00038 + i) * 0.038)) * W;
+        const y = ((i * 0.082 + 0.06 + Math.cos(t * 0.00029 + i * 1.6) * 0.032)) * H;
+        const a = 0.045 + Math.sin(t * 0.0009 + i) * 0.022;
+        ctx.fillStyle = `rgba(110,87,255,${a})`;
+        ctx.fillText(s, x, y);
+      });
+    };
+
+    const drawCorners = () => {
+      const size = 22;
+      const pad = 25;
+      ctx.strokeStyle = "rgba(170,150,255,0.6)";
+      ctx.lineWidth = 1;
+
+      ctx.beginPath(); ctx.moveTo(pad + size, pad); ctx.lineTo(pad, pad); ctx.lineTo(pad, pad + size); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(W - pad - size, pad); ctx.lineTo(W - pad, pad); ctx.lineTo(W - pad, pad + size); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(pad + size, H - pad); ctx.lineTo(pad, H - pad); ctx.lineTo(pad, H - pad - size); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(W - pad - size, H - pad); ctx.lineTo(W - pad, H - pad); ctx.lineTo(W - pad, H - pad - size); ctx.stroke();
+    };
+
+    const drawCoords = () => {
+      const mx = mouseRef.current.x;
+      const my = mouseRef.current.y;
+      const xPct = mx < 0 ? "00.00" : ((mx / W) * 100).toFixed(2);
+      const yPct = my < 0 ? "00.00" : ((my / H) * 100).toFixed(2);
+      ctx.font = "19px 'DM Mono', monospace";
+      ctx.fillStyle = "rgba(170,150,255,0.6)";
+      ctx.textAlign = "right";
+      ctx.fillText(`${xPct} / ${yPct}`, W - 50, H - 50);
+      ctx.textAlign = "left";
+    };
+
+    const frame = (ts: number) => {
+      ctx.clearRect(0, 0, W, H);
+      drawOrbs(ts);
+      drawMesh(ts);
+      drawParticles(ts);
+      drawCode(ts);
+      drawCorners();
+      drawCoords();
+      rafRef.current = requestAnimationFrame(frame);
+    };
+
+    rafRef.current = requestAnimationFrame(frame);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
-      window.removeEventListener("resize", handleResize);
+      ro.disconnect();
+      canvas.parentElement?.removeEventListener("mousemove", onMove);
+      canvas.parentElement?.removeEventListener("mouseleave", onLeave);
     };
-  }, [buildGrid, buildParticles, buildSnippets, mousePos]);
+  }, []);
 
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 w-full h-full"
-      style={{ willChange: "transform" }}
-      aria-hidden="true"
+      style={{
+        position: "absolute",
+        inset: 0,
+        width: "100%",
+        height: "100%",
+        display: "block",
+      }}
     />
   );
 }

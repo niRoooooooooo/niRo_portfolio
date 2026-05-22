@@ -25,7 +25,7 @@ function ContactLinks() {
       <motion.a href="mailto:hello@alex.dev" variants={fadeUp} className={linkItemClass}>
         <div className={iconBoxClass}><Mail size={16} className={iconClass} /></div>
         <div>
-          <p className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-0.5">Email</p>
+          <p className="font-mono text-[13px] text-[var(--text-muted)] uppercase tracking-wider mb-0.5">Email</p>
           <p className="font-mono text-sm text-warm group-hover:text-purple transition-colors">hello@alex.dev</p>
         </div>
       </motion.a>
@@ -33,7 +33,7 @@ function ContactLinks() {
       <motion.a href="https://github.com" target="_blank" rel="noopener noreferrer" variants={fadeUp} className={linkItemClass}>
         <div className={iconBoxClass}><GithubIcon width={16} height={16} className={iconClass} /></div>
         <div>
-          <p className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-0.5">GitHub</p>
+          <p className="font-mono text-[13px] text-[var(--text-muted)] uppercase tracking-wider mb-0.5">GitHub</p>
           <p className="font-mono text-sm text-warm group-hover:text-purple transition-colors">github.com/alexchen</p>
         </div>
       </motion.a>
@@ -41,7 +41,7 @@ function ContactLinks() {
       <motion.a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" variants={fadeUp} className={linkItemClass}>
         <div className={iconBoxClass}><LinkedinIcon width={16} height={16} className={iconClass} /></div>
         <div>
-          <p className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-0.5">LinkedIn</p>
+          <p className="font-mono text-[13px] text-[var(--text-muted)] uppercase tracking-wider mb-0.5">LinkedIn</p>
           <p className="font-mono text-sm text-warm group-hover:text-purple transition-colors">linkedin.com/in/alexchen</p>
         </div>
       </motion.a>
@@ -162,7 +162,7 @@ export function Contact() {
                 {/* Name + Email row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="font-mono text-[10px] uppercase tracking-wider text-[var(--text-muted)] block mb-1.5">
+                    <label className="font-mono text-[13px] uppercase tracking-wider text-[var(--text-muted)] block mb-1.5">
                       Name
                     </label>
                     <input
@@ -176,7 +176,7 @@ export function Contact() {
                     />
                   </div>
                   <div>
-                    <label className="font-mono text-[10px] uppercase tracking-wider text-[var(--text-muted)] block mb-1.5">
+                    <label className="font-mono text-[13px] uppercase tracking-wider text-[var(--text-muted)] block mb-1.5">
                       Email
                     </label>
                     <input
@@ -193,7 +193,7 @@ export function Contact() {
 
                 {/* Subject */}
                 <div>
-                  <label className="font-mono text-[10px] uppercase tracking-wider text-[var(--text-muted)] block mb-1.5">
+                  <label className="font-mono text-[13px] uppercase tracking-wider text-[var(--text-muted)] block mb-1.5">
                     Subject
                   </label>
                   <input
@@ -209,7 +209,7 @@ export function Contact() {
 
                 {/* Message */}
                 <div>
-                  <label className="font-mono text-[10px] uppercase tracking-wider text-[var(--text-muted)] block mb-1.5">
+                  <label className="font-mono text-[13px] uppercase tracking-wider text-[var(--text-muted)] block mb-1.5">
                     Message
                   </label>
                   <textarea

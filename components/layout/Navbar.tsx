@@ -46,7 +46,7 @@ export function Navbar() {
             className="font-mono text-sm font-medium text-purple hover:text-white transition-colors"
             onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
           >
-            // alex.dev
+            // niRo.dev
           </a>
 
           {/* Desktop nav */}

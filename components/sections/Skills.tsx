@@ -15,7 +15,7 @@ const CATEGORIES: { key: Skill["category"]; label: string; color: string }[] = [
 ];
 
 export function Skills() {
-  const { ref, isInView } = useScrollReveal({ margin: "-120px" });
+  const { ref, isInView } = useScrollReveal({ margin: "-150px" });
 
   return (
     <section id="skills" className="section-pad bg-base">

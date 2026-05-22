@@ -46,7 +46,7 @@ export function TestimonialCard({ testimonial, className }: TestimonialCardProps
           <p className="font-display text-sm font-semibold text-warm">
             {testimonial.name}
           </p>
-          <p className="font-mono text-[10px] text-[var(--text-muted)]">
+          <p className="font-mono text-[13px] text-[var(--text-muted)]">
             {testimonial.role} · {testimonial.company}
           </p>
         </div>

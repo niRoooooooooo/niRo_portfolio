@@ -72,7 +72,7 @@ export function About() {
                     <p className="font-display text-sm font-semibold text-warm">
                       {entry.role}
                       {entry.current && (
-                        <span className="ml-2 font-mono text-[9px] text-teal border border-teal/30 px-1.5 py-0.5 rounded-sm uppercase tracking-wider">
+                        <span className="ml-2 font-mono text-[11px] text-teal border border-teal/30 px-1.5 py-0.5 rounded-sm uppercase tracking-wider">
                           current
                         </span>
                       )}
@@ -103,7 +103,7 @@ export function About() {
                     linear-gradient(rgba(110,87,255,0.06) 1px, transparent 1px),
                     linear-gradient(90deg, rgba(110,87,255,0.06) 1px, transparent 1px)
                   `,
-                  backgroundSize: "24px 24px",
+                  backgroundSize: "30px 30px",
                 }}
               />
               {/* Inner glow */}
