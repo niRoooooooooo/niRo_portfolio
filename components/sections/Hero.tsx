@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Download } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -26,12 +25,12 @@ export function Hero() {
       <HeroCanvas />
 
       {/* Content */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-24 pb-16 flex flex-row items-center justify-center gap-32">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-24 pb-16 flex flex-col items-center justify-center">
         <motion.div
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
-          className="flex-1 max-w-xl"
+          className="max-w-2xl text-center"
         >
           {/* Availability badge */}
           <motion.div variants={fadeUp} className="mb-8">
@@ -64,8 +63,7 @@ export function Hero() {
           </motion.h1>
 
           {/* Role */}
-          <motion.div variants={fadeUp} className="flex items-center gap-4 mb-6">
-            <span className="w-8 h-0.5 bg-coral flex-shrink-0" />
+          <motion.div variants={fadeUp} className="flex items-center justify-center gap-4 mb-6">
             <p className="font-mono text-lg text-[var(--text-muted)]">
               Senior Full-Stack Engineer
             </p>
@@ -81,7 +79,7 @@ export function Hero() {
           </motion.p>
 
           {/* CTAs */}
-          <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
+          <motion.div variants={fadeUp} className="flex flex-wrap gap-4 justify-center">
             <Button variant="primary" onClick={scrollToContact}>
               Let&apos;s work together <ArrowRight size={14} />
             </Button>
@@ -96,23 +94,6 @@ export function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Profile image */}
-        <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.9, delay: 0.6, ease: "easeOut" }}
-          className="hidden lg:flex flex-shrink-0 items-center justify-center"
-        >
-          <Image
-            src="/niro.png"
-            alt="Niloy Roy"
-            width={420}
-            height={520}
-            className="object-contain"
-            style={{ mixBlendMode: "screen" }}
-            priority
-          />
-        </motion.div>
       </div>
 
       {/* Scroll indicator */}

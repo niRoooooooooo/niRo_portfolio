@@ -29,11 +29,11 @@ const base =
 
 const variants: Record<ButtonVariant, string> = {
   primary:
-    "bg-purple text-white px-6 py-3 rounded-sm hover:bg-[#5a46e8] active:scale-[0.97]",
+    "bg-purple text-white px-6 py-3 rounded-sm hover:bg-[#3d2cc0] active:scale-[0.97]",
   outline:
     "border border-purple text-purple px-6 py-3 rounded-sm hover:bg-purple hover:text-white active:scale-[0.97]",
   ghost:
-    "text-[var(--text-muted)] px-4 py-2 rounded-sm hover:text-warm hover:bg-[var(--bg-elevated)] active:scale-[0.97]",
+    "border border-transparent text-[var(--text-muted)] px-4 py-2 rounded-sm hover:text-warm hover:bg-[var(--bg-elevated)] hover:border-purple/60 hover:shadow-[0_0_16px_rgba(110,87,255,0.45)] active:scale-[0.97]",
 };
 
 const sizes: Record<ButtonSize, string> = {

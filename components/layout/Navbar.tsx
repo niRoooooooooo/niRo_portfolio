@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
-  { label: "work",     href: "#projects"     },
-  { label: "about",    href: "#about"        },
-  { label: "services", href: "#services"     },
-  { label: "contact",  href: "#contact"      },
+  { label: "About",    href: "#about"        },
+  { label: "Work",     href: "#projects"     },
+  { label: "Services", href: "#services"     },
+  { label: "Contact",  href: "#contact"      },
 ];
 
 export function Navbar() {
@@ -55,7 +55,7 @@ export function Navbar() {
               <button
                 key={link.href}
                 onClick={() => handleNavClick(link.href)}
-                className="font-mono text-xs text-[var(--text-muted)] hover:text-warm transition-colors cursor-pointer"
+                className="font-mono text-sm text-[var(--text-muted)] hover:text-warm transition-colors cursor-pointer"
               >
                 {link.label}
               </button>
@@ -67,10 +67,10 @@ export function Navbar() {
             <Button
               variant="outline"
               size="sm"
-              className="hidden md:inline-flex"
+              className="hidden md:inline-flex font-bold"
               onClick={() => handleNavClick("#contact")}
             >
-              hire me
+              Hire me
             </Button>
             <button
               className="md:hidden text-[var(--text-muted)] hover:text-warm transition-colors"

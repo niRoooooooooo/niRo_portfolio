@@ -24,9 +24,9 @@ const COLORS: [number, number, number][] = [
   [240, 237, 232],
 ];
 
-const GX = 20;
-const GY = 14;
-const NPART = 80;
+const GX = 13;
+const GY = 9;
+const NPART = 160;
 
 export default function HeroCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -59,16 +59,16 @@ export default function HeroCanvas() {
       x: Math.random(), y: Math.random(),
       vx: (Math.random() - 0.5) * 0.0003,
       vy: (Math.random() - 0.5) * 0.0003,
-      r: Math.random() * 1.4 + 0.4,
+      r: Math.random() * 2.0 + 0.8,
       c: COLORS[Math.floor(Math.random() * COLORS.length)],
-      a: Math.random() * 0.5 + 0.15,
+      a: Math.random() * 0.42 + 0.27,
       ph: Math.random() * Math.PI * 2,
     }));
 
     const orbs: Orb[] = [
-      { x: 0.18, y: 0.45, r: 275, c: [110, 87, 255], s: 0.00018, amp: 0.055 },
-      { x: 0.78, y: 0.32, r: 200, c: [255, 107, 107], s: 0.00022, amp: 0.05 },
-      { x: 0.52, y: 0.75, r: 225, c: [0, 212, 170],   s: 0.00014, amp: 0.04 },
+      { x: 0.18, y: 0.45, r: 340, c: [110, 87, 255], s: 0.00018, amp: 0.055 },
+      { x: 0.78, y: 0.32, r: 260, c: [255, 107, 107], s: 0.00022, amp: 0.05 },
+      { x: 0.52, y: 0.75, r: 290, c: [0, 212, 170],   s: 0.00014, amp: 0.04 },
     ];
 
     const snips = ["async", "fn()", "</>", "=>", "{...}", "[]", "&&", "::", "null", "0x1f"];
@@ -100,7 +100,7 @@ export default function HeroCanvas() {
           const p = pts[gy * (GX + 1) + gx];
           gx === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
         }
-        const a = 0.055 + Math.sin(t * 0.0011 + gy) * 0.018;
+        const a = 0.042 + Math.sin(t * 0.0011 + gy) * 0.014;
         ctx.strokeStyle = `rgba(110,87,255,${a})`;
         ctx.lineWidth = 0.6;
         ctx.stroke();
@@ -112,9 +112,9 @@ export default function HeroCanvas() {
           const p = pts[gy * (GX + 1) + gx];
           gy === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
         }
-        const a = 0.04 + Math.cos(t * 0.001 + gx) * 0.014;
+        const a = 0.034 + Math.cos(t * 0.001 + gx) * 0.011;
         ctx.strokeStyle = `rgba(110,87,255,${a})`;
-        ctx.lineWidth = 0.6;
+        ctx.lineWidth = 0.8;
         ctx.stroke();
       }
 
@@ -124,8 +124,8 @@ export default function HeroCanvas() {
         const dy = my - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         const near = Math.max(0, 1 - dist / 163);
-        const alpha = 0.12 + near * 0.75;
-        const radius = 1.1 + near * 4;
+        const alpha = 0.27 + near * 0.81;
+        const radius = 1.5 + near * 5;
         ctx.beginPath();
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
         ctx.fillStyle =
@@ -141,8 +141,8 @@ export default function HeroCanvas() {
         const cx = (o.x + Math.sin(t * o.s * 1000 + i) * o.amp) * W;
         const cy = (o.y + Math.cos(t * o.s * 800 + i * 1.4) * o.amp) * H;
         const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, o.r);
-        g.addColorStop(0, `rgba(${o.c},0.15)`);
-        g.addColorStop(0.5, `rgba(${o.c},0.06)`);
+        g.addColorStop(0, `rgba(${o.c},0.30)`);
+        g.addColorStop(0.5, `rgba(${o.c},0.13)`);
         g.addColorStop(1, `rgba(${o.c},0)`);
         ctx.beginPath();
         ctx.arc(cx, cy, o.r, 0, Math.PI * 2);
@@ -169,8 +169,8 @@ export default function HeroCanvas() {
         const dy = my - py;
         const dist = Math.sqrt(dx * dx + dy * dy);
         const near = Math.max(0, 1 - dist / 125);
-        const alpha = p.a + near * 0.55;
-        const rad = p.r + near * 3.1;
+        const alpha = p.a + near * 0.58;
+        const rad = p.r + near * 4;
 
         ctx.beginPath();
         ctx.arc(px, py, rad, 0, Math.PI * 2);
@@ -186,7 +186,7 @@ export default function HeroCanvas() {
             ctx.beginPath();
             ctx.moveTo(px, py);
             ctx.lineTo(q.x * W, q.y * H);
-            ctx.strokeStyle = `rgba(${p.c},${(1 - dd / 100) * 0.13})`;
+            ctx.strokeStyle = `rgba(${p.c},${(1 - dd / 100) * 0.29})`;
             ctx.lineWidth = 0.4;
             ctx.stroke();
           }
@@ -199,7 +199,7 @@ export default function HeroCanvas() {
       snips.forEach((s, i) => {
         const x = ((i * 0.095 + 0.03 + Math.sin(t * 0.00038 + i) * 0.038)) * W;
         const y = ((i * 0.082 + 0.06 + Math.cos(t * 0.00029 + i * 1.6) * 0.032)) * H;
-        const a = 0.045 + Math.sin(t * 0.0009 + i) * 0.022;
+        const a = 0.13 + Math.sin(t * 0.0009 + i) * 0.057;
         ctx.fillStyle = `rgba(110,87,255,${a})`;
         ctx.fillText(s, x, y);
       });
