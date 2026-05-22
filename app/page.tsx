@@ -2,9 +2,8 @@ import { Hero }         from "@/components/sections/Hero";
 import { Stats }        from "@/components/sections/Stats";
 import { About }        from "@/components/sections/About";
 import { Projects }     from "@/components/sections/Projects";
-import { Skills }       from "@/components/sections/Skills";
+import { Research }     from "@/components/sections/Research";
 import { Services }     from "@/components/sections/Services";
-import { Testimonials } from "@/components/sections/Testimonials";
 import { Contact }      from "@/components/sections/Contact";
 
 export default function HomePage() {
@@ -14,9 +13,8 @@ export default function HomePage() {
       <Stats />
       <About />
       <Projects />
-      <Skills />
+      <Research />
       <Services />
-      <Testimonials />
       <Contact />
     </>
   );

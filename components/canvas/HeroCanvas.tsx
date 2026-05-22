@@ -24,9 +24,9 @@ const COLORS: [number, number, number][] = [
   [240, 237, 232],
 ];
 
-const GX = 13;
-const GY = 9;
-const NPART = 160;
+const GX = 15;
+const GY = 11;
+const NPART = 144;
 
 export default function HeroCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -100,7 +100,7 @@ export default function HeroCanvas() {
           const p = pts[gy * (GX + 1) + gx];
           gx === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
         }
-        const a = 0.042 + Math.sin(t * 0.0011 + gy) * 0.014;
+        const a = 0.018 + Math.sin(t * 0.0011 + gy) * 0.006;
         ctx.strokeStyle = `rgba(110,87,255,${a})`;
         ctx.lineWidth = 0.6;
         ctx.stroke();
@@ -112,7 +112,7 @@ export default function HeroCanvas() {
           const p = pts[gy * (GX + 1) + gx];
           gy === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
         }
-        const a = 0.034 + Math.cos(t * 0.001 + gx) * 0.011;
+        const a = 0.014 + Math.cos(t * 0.001 + gx) * 0.005;
         ctx.strokeStyle = `rgba(110,87,255,${a})`;
         ctx.lineWidth = 0.8;
         ctx.stroke();
@@ -124,8 +124,8 @@ export default function HeroCanvas() {
         const dy = my - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         const near = Math.max(0, 1 - dist / 163);
-        const alpha = 0.27 + near * 0.81;
-        const radius = 1.5 + near * 5;
+        const alpha = 0.10 + near * 0.60;
+        const radius = 1.0 + near * 5;
         ctx.beginPath();
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
         ctx.fillStyle =

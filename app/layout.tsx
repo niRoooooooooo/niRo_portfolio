@@ -20,7 +20,7 @@ const dmMono = DM_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Alex Chen — Senior Full-Stack Engineer",
+  title: "Meet_niRo",
   description:
     "Senior full-stack engineer specialising in distributed systems, React/Next.js, and Go. Available for contracts and consulting.",
   keywords: [
@@ -31,17 +31,17 @@ export const metadata: Metadata = {
     "distributed systems",
     "freelance developer",
   ],
-  authors: [{ name: "Alex Chen" }],
+  authors: [{ name: "niRo" }],
   openGraph: {
-    title: "Alex Chen — Senior Full-Stack Engineer",
+    title: "Meet_niRo",
     description:
       "Senior full-stack engineer specialising in distributed systems, React/Next.js, and Go.",
     type: "website",
-    url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://alex.dev",
+    url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://github.com/niRoooooooooo",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Alex Chen — Senior Full-Stack Engineer",
+    title: "Meet_niRo",
   },
 };
 

@@ -43,6 +43,30 @@ export interface Service {
   items: string[];
 }
 
+export interface ManagementEntry {
+  id: string;
+  icon: "calendar" | "users" | "award" | "target";
+  role: string;
+  organization: string;
+  period: string;
+  description: string;
+  skills: string[];
+  accentColor: "purple" | "coral" | "teal" | "amber";
+}
+
+export interface ResearchItem {
+  id: string;
+  number: string;
+  title: string;
+  abstract: string;
+  keywords: string[];
+  venue: string;
+  year: string;
+  status: "published" | "under-review" | "in-progress";
+  accentColor: "purple" | "coral" | "teal" | "amber";
+  href?: string;
+}
+
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant";

@@ -3,10 +3,17 @@
 import { motion } from "framer-motion";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { SkillBar } from "@/components/ui/SkillBar";
 import { services } from "@/data/services";
-import { staggerContainer, fadeUp } from "@/lib/utils";
-import { cn } from "@/lib/utils";
-import type { Service } from "@/types";
+import { skills } from "@/data/skills";
+import { staggerContainer, fadeUp, cn } from "@/lib/utils";
+import type { Service, Skill } from "@/types";
+
+const SKILL_CATEGORIES: { key: Skill["category"]; label: string; color: string }[] = [
+  { key: "frontend",       label: "Frontend",       color: "text-purple" },
+  { key: "backend",        label: "Backend",        color: "text-teal"   },
+  { key: "infrastructure", label: "Infrastructure", color: "text-coral"  },
+];
 
 const iconBgMap: Record<Service["iconBg"], string> = {
   purple: "bg-purple/10 text-purple",
@@ -16,6 +23,7 @@ const iconBgMap: Record<Service["iconBg"], string> = {
 
 export function Services() {
   const { ref, isInView } = useScrollReveal();
+  const { ref: skillsRef, isInView: skillsInView } = useScrollReveal();
 
   return (
     <section id="services" className="section-pad bg-surface">
@@ -28,7 +36,7 @@ export function Services() {
           className="mb-14"
         >
           <motion.div variants={fadeUp} ref={ref}>
-            <SectionLabel index="05" label="Services" />
+            <SectionLabel index="05" label="Skills" />
           </motion.div>
           <motion.h2
             variants={fadeUp}
@@ -83,6 +91,40 @@ export function Services() {
               </ul>
             </div>
           ))}
+        </div>
+
+        {/* ── Skills subsection ─────────────────────────────── */}
+        <div className="mt-20">
+          <div className="flex items-center gap-4 mb-12">
+            <div className="h-px flex-1 bg-[var(--border)]" />
+            <span className="font-mono text-xs text-purple tracking-widest uppercase">
+              // tools of the trade
+            </span>
+            <div className="h-px flex-1 bg-[var(--border)]" />
+          </div>
+
+          <motion.div
+            ref={skillsRef}
+            variants={staggerContainer}
+            initial="hidden"
+            animate={skillsInView ? "visible" : "hidden"}
+            className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16"
+          >
+            {SKILL_CATEGORIES.map(({ key, label, color }) => (
+              <motion.div key={key} variants={fadeUp}>
+                <h3 className={`font-mono text-xs uppercase tracking-widest mb-6 ${color}`}>
+                  {label}
+                </h3>
+                <div className="space-y-5">
+                  {skills
+                    .filter((s) => s.category === key)
+                    .map((skill) => (
+                      <SkillBar key={skill.name} skill={skill} isInView={skillsInView} />
+                    ))}
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </div>
     </section>
