@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     await resend.emails.send({
       from: "Portfolio Contact <onboarding@resend.dev>",
       to: "rniloy1234@gmail.com",
-      reply_to: body.email,
+      replyTo: body.email,
       subject: body.subject
         ? `[Portfolio] ${body.subject}`
         : `[Portfolio] New message from ${body.name}`,
