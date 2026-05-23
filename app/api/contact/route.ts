@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 import type { ContactFormData } from "@/types";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json() as ContactFormData;
 
-    // Honeypot check
     if (body._honeypot) {
-      return NextResponse.json({ ok: true }); // silently discard bots
+      return NextResponse.json({ ok: true });
     }
 
-    // Basic validation
     if (!body.name || !body.email || !body.message) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -18,23 +19,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── Email delivery ────────────────────────────────────────────────────
-    // Option A: Resend SDK  (npm install resend)
-    //   import { Resend } from "resend";
-    //   const resend = new Resend(process.env.RESEND_API_KEY);
-    //   await resend.emails.send({
-    //     from: "portfolio@alex.dev",
-    //     to: "hello@alex.dev",
-    //     subject: `[Portfolio] ${body.subject}`,
-    //     text: `From: ${body.name} <${body.email}>\n\n${body.message}`,
-    //   });
-
-    // For now: log to server console (works for local dev)
-    console.log("[Contact form]", {
-      name:    body.name,
-      email:   body.email,
-      subject: body.subject,
-      message: body.message.slice(0, 120),
+    await resend.emails.send({
+      from: "Portfolio Contact <onboarding@resend.dev>",
+      to: "rniloy1234@gmail.com",
+      reply_to: body.email,
+      subject: body.subject
+        ? `[Portfolio] ${body.subject}`
+        : `[Portfolio] New message from ${body.name}`,
+      text: `Name: ${body.name}\nEmail: ${body.email}\n\n${body.message}`,
     });
 
     return NextResponse.json({ ok: true });

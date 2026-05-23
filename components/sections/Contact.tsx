@@ -98,7 +98,9 @@ export function Contact() {
               // reach me at
             </motion.p>
 
-            <motion.a href="mailto:rniloy1234@gmail.com" variants={fadeUp} className={linkItemClass}>
+            <motion.a href="https://mail.google.com/mail/?view=cm&to=rniloy1234@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer" variants={fadeUp} className={linkItemClass}>
               <div className={iconBoxClass}><Mail size={16} className={iconClass} /></div>
               <div>
                 <p className="font-mono text-[11px] text-[var(--text-muted)] uppercase tracking-wider mb-0.5">Email</p>

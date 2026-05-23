@@ -67,6 +67,15 @@ export interface ResearchItem {
   href?: string;
 }
 
+export interface Credential {
+  id: string;
+  name: string;
+  category: string;
+  image: string;
+  href?: string;
+  accent: "purple" | "teal" | "coral" | "amber";
+}
+
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant";
