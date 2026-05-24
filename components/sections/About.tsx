@@ -111,7 +111,7 @@ export function About() {
 
   return (
     <section id="about" className="section-pad bg-base">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* ── Main two-column grid ── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Left — text */}
@@ -186,7 +186,7 @@ export function About() {
             animate={rightInView ? "visible" : "hidden"}
             className="flex justify-center lg:justify-end"
           >
-            <div className="relative w-72 h-72">
+            <div className="relative w-52 h-52 sm:w-64 sm:h-64 lg:w-72 lg:h-72">
               <div
                 className="absolute inset-0 rounded-sm bg-elevated border border-[var(--border)]"
                 style={{

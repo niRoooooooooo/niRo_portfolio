@@ -40,7 +40,7 @@ export function Navbar() {
             : "bg-transparent"
         )}
       >
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <a
             href="#"
@@ -51,7 +51,7 @@ export function Navbar() {
           </a>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-4 lg:gap-8">
             {NAV_LINKS.map((link) => (
               <button
                 key={link.href}

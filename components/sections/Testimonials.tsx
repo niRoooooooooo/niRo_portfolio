@@ -12,7 +12,7 @@ export function Testimonials() {
 
   return (
     <section id="testimonials" className="section-pad bg-base">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <motion.div
           ref={ref}

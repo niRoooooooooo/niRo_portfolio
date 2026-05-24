@@ -27,7 +27,7 @@ export function Services() {
 
   return (
     <section id="services" className="section-pad bg-surface">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <motion.div
           variants={staggerContainer}
@@ -55,7 +55,7 @@ export function Services() {
           {services.map((service) => (
             <div
               key={service.id}
-              className="group flex flex-col p-8 bg-surface hover:bg-elevated transition-colors duration-300"
+              className="group flex flex-col p-6 sm:p-8 bg-surface hover:bg-elevated transition-colors duration-300"
             >
               {/* Icon */}
               <div

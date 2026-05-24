@@ -59,7 +59,7 @@ export function Stats() {
   return (
     <section ref={ref} className="border-y border-[var(--border)] bg-surface">
       <motion.div
-        className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-[var(--border)]"
+        className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-2 md:grid-cols-4 divide-x divide-[var(--border)]"
         variants={staggerContainer}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
@@ -68,7 +68,7 @@ export function Stats() {
           <motion.div
             key={i}
             variants={fadeUp}
-            className="flex flex-col items-center justify-center py-10 px-6 gap-1"
+            className="flex flex-col items-center justify-center py-8 sm:py-10 px-4 sm:px-6 gap-1"
           >
             <CountUp
               target={stat.num}

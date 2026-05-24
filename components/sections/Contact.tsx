@@ -55,7 +55,7 @@ export function Contact() {
 
   return (
     <section id="contact" className="section-pad bg-base">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
 
         {/* ── Full-width header ─────────────────────────────── */}
         <motion.div
@@ -140,7 +140,7 @@ export function Contact() {
             initial="hidden"
             animate={rightInView ? "visible" : "hidden"}
           >
-            <div className="border border-[var(--border)] rounded-2xl bg-surface p-8">
+            <div className="border border-[var(--border)] rounded-2xl bg-surface p-6 sm:p-8">
               {status === "success" ? (
                 <div className="flex flex-col items-center justify-center gap-4 text-center py-16">
                   <span className="text-4xl">✓</span>

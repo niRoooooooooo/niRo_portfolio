@@ -25,7 +25,7 @@ export function Hero() {
       <HeroCanvas />
 
       {/* Content */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-24 pb-16 flex flex-col items-center justify-center">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-16 flex flex-col items-center justify-center">
         <motion.div
           variants={staggerContainer}
           initial="hidden"
