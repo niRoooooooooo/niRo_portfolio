@@ -195,39 +195,42 @@ export default function HeroCanvas() {
     };
 
     const drawCode = (t: number) => {
-      ctx.font = "14px 'DM Mono', monospace";
-      snips.forEach((s, i) => {
-        const x = ((i * 0.095 + 0.03 + Math.sin(t * 0.00038 + i) * 0.038)) * W;
-        const y = ((i * 0.082 + 0.06 + Math.cos(t * 0.00029 + i * 1.6) * 0.032)) * H;
-        const a = 0.13 + Math.sin(t * 0.0009 + i) * 0.057;
-        ctx.fillStyle = `rgba(110,87,255,${a})`;
-        ctx.fillText(s, x, y);
-      });
-    };
+  const fontSize = Math.max(10, Math.min(14, W * 0.009));
+  ctx.font = `${fontSize}px 'DM Mono', monospace`;
+  snips.forEach((s, i) => {
+    const x = ((i * 0.095 + 0.03 + Math.sin(t * 0.00038 + i) * 0.038)) * W;
+    const y = ((i * 0.082 + 0.06 + Math.cos(t * 0.00029 + i * 1.6) * 0.032)) * H;
+    const a = 0.13 + Math.sin(t * 0.0009 + i) * 0.057;
+    ctx.fillStyle = `rgba(110,87,255,${a})`;
+    ctx.fillText(s, x, y);
+  });
+};
 
-    const drawCorners = () => {
-      const size = 22;
-      const pad = 25;
-      ctx.strokeStyle = "rgba(170,150,255,0.6)";
-      ctx.lineWidth = 1;
+   const drawCorners = () => {
+  const size = Math.max(12, Math.min(22, W * 0.015));
+  const pad = Math.max(14, Math.min(25, W * 0.017));
+  ctx.strokeStyle = "rgba(170,150,255,0.6)";
+  ctx.lineWidth = 1;
 
-      ctx.beginPath(); ctx.moveTo(pad + size, pad); ctx.lineTo(pad, pad); ctx.lineTo(pad, pad + size); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(W - pad - size, pad); ctx.lineTo(W - pad, pad); ctx.lineTo(W - pad, pad + size); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(pad + size, H - pad); ctx.lineTo(pad, H - pad); ctx.lineTo(pad, H - pad - size); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(W - pad - size, H - pad); ctx.lineTo(W - pad, H - pad); ctx.lineTo(W - pad, H - pad - size); ctx.stroke();
-    };
+  ctx.beginPath(); ctx.moveTo(pad + size, pad); ctx.lineTo(pad, pad); ctx.lineTo(pad, pad + size); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W - pad - size, pad); ctx.lineTo(W - pad, pad); ctx.lineTo(W - pad, pad + size); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(pad + size, H - pad); ctx.lineTo(pad, H - pad); ctx.lineTo(pad, H - pad - size); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W - pad - size, H - pad); ctx.lineTo(W - pad, H - pad); ctx.lineTo(W - pad, H - pad - size); ctx.stroke();
+};
 
     const drawCoords = () => {
-      const mx = mouseRef.current.x;
-      const my = mouseRef.current.y;
-      const xPct = mx < 0 ? "00.00" : ((mx / W) * 100).toFixed(2);
-      const yPct = my < 0 ? "00.00" : ((my / H) * 100).toFixed(2);
-      ctx.font = "19px 'DM Mono', monospace";
-      ctx.fillStyle = "rgba(170,150,255,0.6)";
-      ctx.textAlign = "right";
-      ctx.fillText(`${xPct} / ${yPct}`, W - 50, H - 50);
-      ctx.textAlign = "left";
-    };
+  const mx = mouseRef.current.x;
+  const my = mouseRef.current.y;
+  const xPct = mx < 0 ? "00.00" : ((mx / W) * 100).toFixed(2);
+  const yPct = my < 0 ? "00.00" : ((my / H) * 100).toFixed(2);
+  const fontSize = Math.max(11, Math.min(19, W * 0.013));
+  const pad = Math.max(14, Math.min(50, W * 0.033));
+  ctx.font = `${fontSize}px 'DM Mono', monospace`;
+  ctx.fillStyle = "rgba(170,150,255,0.6)";
+  ctx.textAlign = "right";
+  ctx.fillText(`${xPct} / ${yPct}`, W - pad, H - pad);
+  ctx.textAlign = "left";
+};
 
     const frame = (ts: number) => {
       ctx.clearRect(0, 0, W, H);
